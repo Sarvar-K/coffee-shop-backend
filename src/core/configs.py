@@ -6,9 +6,10 @@ POSTGRES_USER = os.environ['POSTGRES_USER']
 POSTGRES_PASSWORD = os.environ['POSTGRES_PASSWORD']
 DB_HOST = os.environ['DB_HOST']
 POSTGRES_PORT = os.environ['POSTGRES_PORT']
-POSTGRES_SCHEMA = os.environ['POSTGRES_SCHEMA']
 
 DB_URL = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{DB_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+POSTGRES_SCHEMA = 'coffee_shop_backend'
 
 CORS_SETTINGS = {
     'allow_origins': ['*'],
