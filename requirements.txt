@@ -1,0 +1,8 @@
+fastapi>=0.115,<0.116
+SQLAlchemy>=2.0,<2.1
+alembic>=1.16,<1.17
+asyncpg>=0.30,<0.31
+greenlet>=3.2,<3.3
+pyhumps==3.8.0
+gunicorn>=23.0,<23.1
+uvicorn-worker>=0.3,<0.4
