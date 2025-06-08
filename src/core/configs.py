@@ -17,3 +17,6 @@ CORS_SETTINGS = {
     'allow_methods': ['*'],
     'allow_headers': ['*'],
 }
+
+MAX_OTP_GENERATION_ATTEMPTS = 5
+OTP_ALIVE_FOR_SECONDS = 120

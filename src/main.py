@@ -8,6 +8,7 @@ from api.routers import main_router
 from core import configs
 from api.error_handler import request_validation_exception_handler, unrecognized_exception_handler
 from dependencies.db import db_manager
+from middlewares.camel_case import CamelCaseMiddleware
 
 
 @asynccontextmanager
@@ -24,12 +25,14 @@ def init_app():
         title="Coffee Shop Backend",
         version="1.0",
         lifespan=lifespan,
+        debug=True,
     )
 
     app.add_middleware(
         CORSMiddleware,
         **configs.CORS_SETTINGS
     )
+    app.add_middleware(CamelCaseMiddleware)
 
     app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
     app.add_exception_handler(Exception, unrecognized_exception_handler)
