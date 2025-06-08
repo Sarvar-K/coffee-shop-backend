@@ -3,7 +3,7 @@ from logging.config import fileConfig
 
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlalchemy.engine import Connection
-from sqlalchemy import pool, text
+from sqlalchemy import pool
 
 from alembic import context
 
