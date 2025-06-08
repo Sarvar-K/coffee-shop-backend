@@ -22,5 +22,17 @@ docker compose up -d
 docker compose down
 ```
 
+**Generate migrations:**
+```commandline
+alembic revision --autogenerate -m "title"
+```
+Replace "title" with descriptive title for what migration changes. The -m flag is required.
+
+**Apply migrations:**
+```commandline
+alembic upgrade head
+```
+
 Notes:
 - Pagination is not implemented for time-saving
+- Same for repeated otp code request. Otp code can be requested once during signup.

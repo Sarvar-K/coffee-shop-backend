@@ -11,7 +11,7 @@ from db.base_models import ModelBase
 from core import configs as app_configs
 
 # MODELS TO WATCH
-from models import user, verification, auth
+from models import user, verification, session
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

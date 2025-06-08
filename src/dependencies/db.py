@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import DatabaseSessionManager
 from core import configs
 
-db_manager = DatabaseSessionManager(configs.DB_URL, configs.DB_URL)
+db_manager = DatabaseSessionManager(configs.DB_URL, configs.POSTGRES_SCHEMA)
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
