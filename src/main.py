@@ -25,6 +25,7 @@ def init_app():
         title="Coffee Shop Backend",
         version="1.0",
         lifespan=lifespan,
+        # TODO remove
         debug=True,
     )
 

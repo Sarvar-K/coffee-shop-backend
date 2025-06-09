@@ -4,28 +4,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.user import create_user, make_user_verified
 from dependencies.db import get_db_session
-from schemas.user import UserCreateSchema
+from schemas.user import UserCreateRequestSchema, UserCreateResponseSchema
 from schemas.verification import VerifyPhoneNumberSchema
 
 auth_router = APIRouter(prefix='/auth')
 
 
-@auth_router.post('/signup')
-async def register_user(payload: UserCreateSchema, db: AsyncSession = Depends(get_db_session)):
-    user = await create_user(
+@auth_router.post('/signup', response_model=UserCreateResponseSchema)
+async def register_user(payload: UserCreateRequestSchema, db: AsyncSession = Depends(get_db_session)):
+    return await create_user(
         db=db,
         phone_number=payload.phone_number,
+        username=payload.username,
         password=payload.password,
         first_name=payload.first_name,
         last_name=payload.last_name
     )
-
-    return {
-        'id': user.id,
-        'phone_number': user.phone_number,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-    }
 
 
 @auth_router.post('/verify')

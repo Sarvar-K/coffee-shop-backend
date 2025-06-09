@@ -19,7 +19,7 @@ async def get_role_by_alias(db: AsyncSession, alias: str):
     return result.scalar_one_or_none()
 
 
-async def create_user(db: AsyncSession, phone_number: str, password: str, first_name: str, last_name: Optional[str]=None):
+async def create_user(db: AsyncSession, phone_number: str, username:str, password: str, first_name: str, last_name: Optional[str]=None):
     try:
         async with db.begin():
             role = await get_role_by_alias(db, UserRole.CLIENT_ALIAS)
@@ -27,6 +27,7 @@ async def create_user(db: AsyncSession, phone_number: str, password: str, first_
             new_user = User(
                 role_id=role.id,
                 phone_number=phone_number,
+                username=username,
                 password=hash_password(password),
                 first_name=first_name,
                 last_name=last_name,

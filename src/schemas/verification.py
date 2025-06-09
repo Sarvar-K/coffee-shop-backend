@@ -1,10 +1,10 @@
-from pydantic import Field, field_validator
+from pydantic import field_validator
 
-from schemas.shared import PhoneNumberSchema
+from schemas.shared import PhoneNumberSchema, NonEmptyString
 
 
 class VerifyPhoneNumberSchema(PhoneNumberSchema):
-    otp: str = Field(..., min_length=6, max_length=6)
+    otp: NonEmptyString(min_length=6, max_length=6)
 
     @field_validator('otp')
     @classmethod

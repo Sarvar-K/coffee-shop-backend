@@ -1,8 +1,8 @@
 """create user and otp models
 
-Revision ID: 9c9056d03eba
+Revision ID: 2f2836c35c4e
 Revises: a143e6c04b55
-Create Date: 2025-06-09 04:16:08.278608
+Create Date: 2025-06-09 22:28:25.243276
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9c9056d03eba'
+revision: str = '2f2836c35c4e'
 down_revision: Union[str, None] = 'a143e6c04b55'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,8 +25,10 @@ def upgrade() -> None:
     sa.Column('edited_at', sa.DateTime(), nullable=False),
     sa.Column('role_id', sa.BigInteger(), nullable=False),
     sa.Column('phone_number', sa.String(length=32), nullable=False),
+    sa.Column('username', sa.String(length=128), nullable=False),
     sa.Column('password', sa.String(length=128), nullable=False),
     sa.Column('is_verified', sa.Boolean(), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('first_name', sa.String(length=128), nullable=False),
     sa.Column('last_name', sa.String(length=128), nullable=True),
     sa.Column('id', sa.BigInteger(), nullable=False),
@@ -35,9 +37,9 @@ def upgrade() -> None:
     schema='coffee_shop_backend'
     )
     op.create_index(op.f('ix_coffee_shop_backend_user_created_at'), 'user', ['created_at'], unique=False, schema='coffee_shop_backend')
-    op.create_index(op.f('ix_coffee_shop_backend_user_is_verified'), 'user', ['is_verified'], unique=False, schema='coffee_shop_backend')
     op.create_index(op.f('ix_coffee_shop_backend_user_phone_number'), 'user', ['phone_number'], unique=True, schema='coffee_shop_backend')
     op.create_index(op.f('ix_coffee_shop_backend_user_role_id'), 'user', ['role_id'], unique=False, schema='coffee_shop_backend')
+    op.create_index(op.f('ix_coffee_shop_backend_user_username'), 'user', ['username'], unique=True, schema='coffee_shop_backend')
     op.create_table('otp',
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.BigInteger(), nullable=False),
@@ -64,9 +66,9 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_coffee_shop_backend_otp_created_at'), table_name='otp', schema='coffee_shop_backend')
     op.drop_index(op.f('ix_coffee_shop_backend_otp_code'), table_name='otp', schema='coffee_shop_backend')
     op.drop_table('otp', schema='coffee_shop_backend')
+    op.drop_index(op.f('ix_coffee_shop_backend_user_username'), table_name='user', schema='coffee_shop_backend')
     op.drop_index(op.f('ix_coffee_shop_backend_user_role_id'), table_name='user', schema='coffee_shop_backend')
     op.drop_index(op.f('ix_coffee_shop_backend_user_phone_number'), table_name='user', schema='coffee_shop_backend')
-    op.drop_index(op.f('ix_coffee_shop_backend_user_is_verified'), table_name='user', schema='coffee_shop_backend')
     op.drop_index(op.f('ix_coffee_shop_backend_user_created_at'), table_name='user', schema='coffee_shop_backend')
     op.drop_table('user', schema='coffee_shop_backend')
     # ### end Alembic commands ###
