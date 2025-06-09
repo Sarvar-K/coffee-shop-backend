@@ -1,16 +1,10 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import field_validator
+
+from schemas.shared import PhoneNumberSchema, NonEmptyString
 
 
-class VerifyPhoneNumberSchema(BaseModel):
-    phone_number: str = Field(..., min_length=5, max_length=32)
-    otp: str = Field(..., min_length=6, max_length=6)
-
-    @field_validator('phone_number')
-    @classmethod
-    def phone_digits_only(cls, v: str) -> str:
-        if not v.isdigit():
-            raise ValueError("Phone number must contain digits only")
-        return v
+class VerifyPhoneNumberSchema(PhoneNumberSchema):
+    otp: NonEmptyString(min_length=6, max_length=6)
 
     @field_validator('otp')
     @classmethod

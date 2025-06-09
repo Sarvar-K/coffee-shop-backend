@@ -1,17 +1,27 @@
+from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field
+
+from schemas.shared import PhoneNumberSchema, NonEmptyString
 
 
-class UserCreateSchema(BaseModel):
-    phone_number: str = Field(..., min_length=5, max_length=32)
-    first_name: str = Field(..., min_length=1, max_length=128)
+class UserBaseSchema(PhoneNumberSchema):
+    username: NonEmptyString(min_length=6, max_length=128)
+    first_name: NonEmptyString(min_length=1, max_length=128)
     last_name: Optional[str] = Field(None, max_length=128)
-    password: str = Field(..., min_length=8, max_length=128)
 
-    @field_validator('phone_number')
-    @classmethod
-    def digits_only(cls, v: str) -> str:
-        if not v.isdigit():
-            raise ValueError("Phone number must contain digits only")
-        return v
+
+class UserCreateRequestSchema(UserBaseSchema):
+    password: NonEmptyString(min_length=8, max_length=128)
+
+
+class UserCreateResponseSchema(UserBaseSchema):
+    id: int
+    created_at: datetime
+    edited_at: datetime
+    is_verified: bool
+    is_active: bool
+
+    class Config:
+        from_attributes = True
