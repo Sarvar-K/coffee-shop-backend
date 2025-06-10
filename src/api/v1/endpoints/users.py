@@ -3,12 +3,12 @@ from typing import List, Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud.user import find_all_users, find_user_by_id
+from crud.user import find_all_users, find_user_by_id, partially_update_user
 from dependencies.auth import get_current_active_admin
 from dependencies.db import get_db_session
 from exceptions import NotFoundError
 from models.user import User
-from schemas.user import UserWithAliasResponse
+from schemas.user import UserWithAliasResponse, UserPatchRequestSchema
 
 users_router = APIRouter(prefix='/users')
 
@@ -28,4 +28,21 @@ async def find_user(
     if not user:
         raise NotFoundError('User not found')
 
+    return user
+
+
+@users_router.patch('/{user_id}', response_model=UserWithAliasResponse)
+async def patch_user(
+        user_id: int,
+        update_schema: UserPatchRequestSchema,
+        db: AsyncSession = Depends(get_db_session)
+):
+    user = await find_user_by_id(db, user_id)
+    if not user:
+        raise NotFoundError('User not found')
+
+    await partially_update_user(db, user, update_schema.dict(exclude_unset=True))
+
+    await db.commit()
+    await db.refresh(user)
     return user

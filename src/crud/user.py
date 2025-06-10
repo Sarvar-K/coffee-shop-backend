@@ -86,6 +86,13 @@ async def find_user_by_id(db: AsyncSession, id: int):
     return result.scalar_one_or_none()
 
 
+async def partially_update_user(db: AsyncSession, user: User, update_data: dict):
+    for field, value in update_data.items():
+        setattr(user, field, value)
+
+    await db.flush()
+
+
 def _get_user_query():
     return select(User).options(joinedload(User.role, innerjoin=True))
 
