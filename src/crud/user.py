@@ -60,16 +60,27 @@ async def create_user(db: AsyncSession, phone_number: str, username:str, hashed_
 
 async def find_user_by_phone_number(db: AsyncSession, phone_number: str) -> Optional[User]:
     result = await db.execute(
-        select(User).where(User.phone_number == phone_number)
+        _get_user_query().where(User.phone_number == phone_number)
     )
     return result.scalar_one_or_none()
 
 
 async def find_user_by_username(db: AsyncSession, username: str) -> Optional[User]:
     result = await db.execute(
-        select(User).options(joinedload(User.role, innerjoin=True)).where(User.username == username)
+        _get_user_query().where(User.username == username)
     )
     return result.scalar_one_or_none()
+
+
+async def find_user_by_id(db: AsyncSession, id: int):
+    result = await db.execute(
+        _get_user_query().where(User.id == id)
+    )
+    return result.scalar_one_or_none()
+
+
+def _get_user_query():
+    return select(User).options(joinedload(User.role, innerjoin=True))
 
 
 async def make_user_verified(db: AsyncSession, phone_number: str, otp: str) -> None:

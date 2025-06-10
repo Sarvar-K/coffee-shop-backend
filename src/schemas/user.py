@@ -16,12 +16,19 @@ class UserCreateRequestSchema(UserBaseSchema):
     password: PasswordField
 
 
-class UserCreateResponseSchema(UserBaseSchema):
+class UserResponseSchema(UserBaseSchema):
     id: int
     created_at: datetime
     edited_at: datetime
     is_verified: bool
     is_active: bool
+
+    class Config:
+        from_attributes = True
+
+
+class UserWithAliasResponse(UserResponseSchema):
+    role_alias: str = Field(..., serialization_alias='role')
 
     class Config:
         from_attributes = True

@@ -31,3 +31,7 @@ class User(AbstractModel):
     last_name = Column(String(128), nullable=True)
 
     role = relationship('UserRole')
+
+    @property
+    def role_alias(self):
+        return self.role.alias
