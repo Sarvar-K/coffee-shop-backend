@@ -34,6 +34,14 @@ Replace "title" with descriptive title for what migration changes. The -m flag i
 alembic upgrade head
 ```
 
+Functionality extension:
+- Group new database models by their meaning and place them in appropriately named modules. Place those modules in _src.models_ package.
+- Place functions that perform Create/Retrieve/Update/Delete (CRUD) operations on database models in _src.crud_ package. Name modules respective to their models modules.
+- Place pydantic schemas for request/response serialization and validation in _src.schemas_ package
+- Place functions that perform logic operations in _src.core_ package
+- Place new routers in _src.api.routers_ module
+- Place new endpoints in modules named after their respective router component and place those modules in _src.api.v1.endpoints_ package
+
 Notes:
 - Pagination is not implemented for time-saving
 - Same for repeated otp code request. Otp code can be requested once during signup.
