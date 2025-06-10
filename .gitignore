@@ -3,9 +3,12 @@ venv
 logs
 keys
 db_data
+redis_data
 .DS_Store
 
 .env
 
 __pycache__
 */__pycache__
+
+*/celerybeat-schedule
