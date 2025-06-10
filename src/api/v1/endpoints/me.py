@@ -1,4 +1,4 @@
-from typing import Annotated, Coroutine, Awaitable
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
