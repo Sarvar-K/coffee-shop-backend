@@ -5,14 +5,15 @@ from fastapi.exceptions import RequestValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from exceptions import RequestError
 from utils import is_regular_iterable
 
 
-async def unrecognized_exception_handler(request: Request, exc: Exception):
+async def request_exception_handler(request: Request, exc: RequestError):
     return JSONResponse(
-        status_code=500,
+        status_code=exc.status_code,
         content=dict(
-            message=str(exc),
+            message=exc.message,
             details=[],
         ),
     )

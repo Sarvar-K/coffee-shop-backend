@@ -6,8 +6,9 @@ from starlette.middleware.cors import CORSMiddleware
 
 from api.routers import main_router
 from core import configs
-from api.error_handler import request_validation_exception_handler, unrecognized_exception_handler
+from api.error_handler import request_validation_exception_handler, request_exception_handler
 from dependencies.db import db_manager
+from exceptions import RequestError
 from middlewares.camel_case import CamelCaseMiddleware
 
 
@@ -36,7 +37,7 @@ def init_app():
     app.add_middleware(CamelCaseMiddleware)
 
     app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
-    app.add_exception_handler(Exception, unrecognized_exception_handler)
+    app.add_exception_handler(RequestError, request_exception_handler)
 
     app.include_router(main_router)
 
