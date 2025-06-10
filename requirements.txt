@@ -5,6 +5,8 @@ asyncpg>=0.30,<0.31
 greenlet>=3.2,<3.3
 passlib>=1.7,<1.8
 bcrypt>=4.3,<4.4
+PyJWT>=2.10,<2.11
+cryptography>=45.0,<45.1
 pyhumps==3.8.0
 gunicorn>=23.0,<23.1
 uvicorn-worker>=0.3,<0.4

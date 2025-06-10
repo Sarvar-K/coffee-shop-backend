@@ -5,9 +5,10 @@ from fastapi.exceptions import RequestValidationError
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from core import configs
-from core.password import hash_password
+from crud.helpers import find_unique_constraint_violator
 from crud.verification import create_otp_for_user, find_otp_by_code, delete_all_otp_by_user_id
 from models.user import User, UserRole
 
@@ -19,7 +20,7 @@ async def get_role_by_alias(db: AsyncSession, alias: str):
     return result.scalar_one_or_none()
 
 
-async def create_user(db: AsyncSession, phone_number: str, username:str, password: str, first_name: str, last_name: Optional[str]=None):
+async def create_user(db: AsyncSession, phone_number: str, username:str, hashed_password: str, first_name: str, last_name: Optional[str]=None):
     try:
         async with db.begin():
             role = await get_role_by_alias(db, UserRole.CLIENT_ALIAS)
@@ -28,7 +29,7 @@ async def create_user(db: AsyncSession, phone_number: str, username:str, passwor
                 role_id=role.id,
                 phone_number=phone_number,
                 username=username,
-                password=hash_password(password),
+                password=hashed_password,
                 first_name=first_name,
                 last_name=last_name,
             )
@@ -41,18 +42,32 @@ async def create_user(db: AsyncSession, phone_number: str, username:str, passwor
         await db.refresh(new_user)
 
         return new_user
-    except IntegrityError:
-        await db.rollback()
+    except IntegrityError as e:
+        field_name = find_unique_constraint_violator(e)
+
+        loc = field_name
+        msg = f'User with this {field_name} already exists'
+        if not field_name:
+            loc = 'unknown_field'
+            msg = 'Unique constraint violation, could not determine field name that causes duplication'
+
         raise RequestValidationError([{
-            "loc": ("body", "phone_number"),
-            "msg": "User with this phone number already exists",
-            "type": "value_error.duplicate"
+            "loc": ('body', loc),
+            "msg": msg,
+            "type": 'value_error.duplicate'
         }])
 
 
-async def find_user_by_phone_number(db: AsyncSession, phone_number: str) -> User:
+async def find_user_by_phone_number(db: AsyncSession, phone_number: str) -> Optional[User]:
     result = await db.execute(
         select(User).where(User.phone_number == phone_number)
+    )
+    return result.scalar_one_or_none()
+
+
+async def find_user_by_username(db: AsyncSession, username: str) -> Optional[User]:
+    result = await db.execute(
+        select(User).options(joinedload(User.role, innerjoin=True)).where(User.username == username)
     )
     return result.scalar_one_or_none()
 

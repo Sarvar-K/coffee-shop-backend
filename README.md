@@ -3,8 +3,9 @@ Practice project, only user management and auth logic is implemented
 
 **Before launch:**:
 - Create ./keys directory
-- Generate private JWT key and place it in ./keys/jwt.key
-- Generate public JWT key and place it in ./keys/jwt.key.pub
+- Generate RSA private and public keys
+- Place private key in ./keys/jwt.key
+- Place public key in ./keys/jwt.key.pub
 - Create .env and populate it according to .env_example
 
 **Launch without containerization:**
@@ -36,3 +37,4 @@ alembic upgrade head
 Notes:
 - Pagination is not implemented for time-saving
 - Same for repeated otp code request. Otp code can be requested once during signup.
+- Same for refresh token deactivation upon usage. Ideally, refresh token would contain token_id that would be tied to db entity (created for each refresh token, many to one to session). Once used, this db_entity would be marked as used. Upon repeated refresh token usage attempt, we would check that db_entity is used and reject. Currently, the same refresh token can be used unlimited amount of times until it is expired.
