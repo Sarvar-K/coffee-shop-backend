@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi.exceptions import RequestValidationError
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -70,6 +70,13 @@ async def find_user_by_username(db: AsyncSession, username: str) -> Optional[Use
         _get_user_query().where(User.username == username)
     )
     return result.scalar_one_or_none()
+
+
+async def find_all_users(db: AsyncSession):
+    result = await db.execute(
+        _get_user_query().order_by(desc(User.id))
+    )
+    return result.scalars().all()
 
 
 async def find_user_by_id(db: AsyncSession, id: int):
