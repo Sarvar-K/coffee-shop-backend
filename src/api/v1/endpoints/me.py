@@ -1,4 +1,4 @@
-from typing import Annotated, Coroutine, Awaitable
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
@@ -9,5 +9,5 @@ from schemas.user import UserWithAliasResponse
 me_router = APIRouter(prefix='/me')
 
 @me_router.get('', response_model=UserWithAliasResponse)
-async def read_my_user(current_user_awaitable: Annotated[User, Depends(get_current_active_user)]):
-    return current_user_awaitable
+async def read_my_user(current_user: Annotated[User, Depends(get_current_active_user)]):
+    return current_user

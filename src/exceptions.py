@@ -29,3 +29,9 @@ class ValidationError(RequestError):
 
     def __init__(self, message):
         super().__init__(400, message)
+
+
+class NotFoundError(RequestError):
+
+    def __init__(self, message):
+        super().__init__(404, message)
