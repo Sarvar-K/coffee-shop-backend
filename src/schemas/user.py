@@ -1,6 +1,4 @@
 from datetime import datetime
-from typing import Optional
-
 from pydantic import Field, BaseModel
 
 from schemas.shared import PhoneNumberSchema, NonEmptyStringField, UsernameField, PasswordField
