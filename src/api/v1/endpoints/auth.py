@@ -12,7 +12,7 @@ from schemas.verification import VerifyPhoneNumberSchema
 auth_router = APIRouter(prefix='/auth')
 
 
-@auth_router.post('/signup', response_model=UserResponseSchema)
+@auth_router.post('/signup', response_model=UserResponseSchema, status_code=status.HTTP_201_CREATED)
 async def register_user(payload: UserCreateRequestSchema, db: AsyncSession = Depends(get_db_session)):
     return await create_user(
         db=db,
@@ -45,7 +45,7 @@ async def login(payload: TokenCreateRequestSchema, db: AsyncSession = Depends(ge
 
 
 @auth_router.post('/refresh', response_model=TokenResponseSchema)
-async def login(payload: TokenRefreshRequestSchema, db: AsyncSession = Depends(get_db_session)):
+async def refresh_token(payload: TokenRefreshRequestSchema, db: AsyncSession = Depends(get_db_session)):
     return TokenResponseSchema(**await refresh_user_token(
         db,
         refresh_token=payload.refresh_token,

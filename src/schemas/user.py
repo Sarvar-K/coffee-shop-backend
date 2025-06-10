@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import Field
+from pydantic import Field, BaseModel
 
 from schemas.shared import PhoneNumberSchema, NonEmptyStringField, UsernameField, PasswordField
 
@@ -9,7 +9,12 @@ from schemas.shared import PhoneNumberSchema, NonEmptyStringField, UsernameField
 class UserBaseSchema(PhoneNumberSchema):
     username: UsernameField
     first_name: NonEmptyStringField(min_length=1, max_length=128)
-    last_name: Optional[str] = Field(None, max_length=128)
+    last_name: Optional[NonEmptyStringField(max_length=128)] = Field(None)
+
+
+class UserPatchRequestSchema(BaseModel):
+    first_name: NonEmptyStringField(min_length=1, max_length=128) = Field(None)
+    last_name: NonEmptyStringField(max_length=128) = Field(None)
 
 
 class UserCreateRequestSchema(UserBaseSchema):

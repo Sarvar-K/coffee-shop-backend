@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -24,3 +24,11 @@ async def get_session_by_id(db: AsyncSession, session_id: int):
         .where(Session.id == session_id)
     )
     return result.scalar_one_or_none()
+
+
+async def delete_sessions_by_user_id(db: AsyncSession, user_id: int):
+    await db.execute(
+        delete(Session)
+        .where(Session.user_id == user_id)
+    )
+    await db.flush()
