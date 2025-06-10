@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi.exceptions import RequestValidationError
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -95,6 +95,20 @@ async def partially_update_user(db: AsyncSession, user: User, update_data: dict)
 
 def _get_user_query():
     return select(User).options(joinedload(User.role, innerjoin=True))
+
+
+async def delete_user_by_id(db: AsyncSession, id: int):
+    await db.execute(
+        delete(User).where(User.id == id)
+    )
+    await db.flush()
+
+
+async def exists_user_by_id(db: AsyncSession, id: int):
+    result = await db.execute(
+        select(select(1).where(User.id == id).exists())
+    )
+    return result.scalar()
 
 
 async def make_user_verified(db: AsyncSession, phone_number: str, otp: str) -> None:

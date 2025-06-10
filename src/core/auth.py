@@ -38,6 +38,9 @@ async def authenticate_user(db: AsyncSession, username: str, password: str) -> d
 async def refresh_user_token(db: AsyncSession, refresh_token: str):
     token_data = decode_refresh_token(refresh_token)
     session = await get_session_by_id(db, session_id=token_data['sessionId'])
+    if not session:
+        raise ForbiddenError('Your authentication session does not exist, probably because your user was deleted')
+
     if session.is_terminated:
         raise ForbiddenError('Auth session has been terminated, please login again')
 
