@@ -6,13 +6,13 @@ from core.auth import hash_password, authenticate_user, refresh_user_token
 from crud.user import create_user, make_user_verified
 from dependencies.db import get_db_session
 from schemas.token import TokenResponseSchema, TokenCreateRequestSchema, TokenRefreshRequestSchema
-from schemas.user import UserCreateRequestSchema, UserCreateResponseSchema
+from schemas.user import UserCreateRequestSchema, UserResponseSchema
 from schemas.verification import VerifyPhoneNumberSchema
 
 auth_router = APIRouter(prefix='/auth')
 
 
-@auth_router.post('/signup', response_model=UserCreateResponseSchema)
+@auth_router.post('/signup', response_model=UserResponseSchema)
 async def register_user(payload: UserCreateRequestSchema, db: AsyncSession = Depends(get_db_session)):
     return await create_user(
         db=db,
