@@ -7,6 +7,8 @@ services:
       - "6379:6379"
     volumes:
       - ./redis_data:/data
+    environment:
+      - TZ=Asia/Tashkent
 
   db:
     image: postgres:16
@@ -18,6 +20,8 @@ services:
     volumes:
       - ./db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - TZ=Asia/Tashkent
     mem_limit: 2g
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
